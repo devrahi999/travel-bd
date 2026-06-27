@@ -1,0 +1,435 @@
+TRAVEL BD — Product Requirements Document (PRD)
+Version: 1.0
+Date: June 2026
+Status: Ready for Development
+Platform: Flutter App + Next.js Backend + Web Admin Panel
+Confidential — Internal Use Only
+Table of Contents
+Product Overview
+User Types & Roles
+Technical Architecture & Stack
+Project Folder Structure
+App Architecture — Single App, Dual Mode
+Authentication Screens
+Traveler App — All Screens
+Business Owner Dashboard — All Screens
+Admin Panel (Web)
+Complete Booking Flow (End-to-End)
+Notification Strategy
+Review & Rating System
+Map & Location Strategy
+Payment System
+Security & Data Privacy
+Development Roadmap
+Phase 2 — Future Features
+1. Product Overview
+Travel BD is Bangladesh's first fully integrated travel super-app. It connects travelers, business owners (hotels, restaurants, tour guides), and tour companies into one unified ecosystem.
+1.1 Vision
+"বাংলাদেশের প্রতিটি কোণ আবিষ্কার করুন — পরিকল্পনা থেকে booking পর্যন্ত সব এক জায়গায়।"
+1.2 Core Value Proposition
+Travelers: AI-powered personalized trip planning, all services bookable from one app
+Business Owners: Digital presence, booking management, revenue analytics
+Platform: Transaction commission, premium listings, data insights
+1.3 Success Metrics (Year 1 Targets)
+Metric
+Target
+Registered Travelers
+50,000+ users
+Registered Businesses
+500+ businesses
+Monthly Active Users
+15,000+
+Booking Completion Rate
+>70%
+App Store Rating
+4.5+ stars
+Average Session Duration
+>8 minutes
+2. User Types & Roles
+There are 4 user types. Each gets a different interface and permission set.
+User Type
+Primary Role
+Access
+Traveler
+Browse, plan, book travel services
+Mobile App — Traveler Mode
+Business Owner
+List services, manage bookings
+Mobile App — Business Mode
+Tour Company
+Create & sell travel packages
+Mobile App — Business Mode
+Admin
+Platform management & moderation
+Web Admin Panel
+2.1 Dual Account Support
+A single user can be both a Traveler AND a Business Owner simultaneously. The app will have a "Switch Mode" button — tapping it switches the UI between Traveler Mode and Business Mode without requiring a separate login. Same account, same credentials, different interface.
+3. Technical Architecture & Stack
+3.1 Technology Stack
+Layer
+Technology
+Mobile App
+Flutter (Dart) — Android + iOS
+State Management
+Riverpod
+Backend Framework
+Next.js (App Router) + API Routes (TypeScript)
+Database
+PostgreSQL via Supabase
+Authentication
+Supabase Auth → JWT Token
+File/Image Storage
+Cloudflare R2 + CDN
+AI Integration
+OpenRouter API (Claude / GPT models)
+Push Notifications
+Firebase Cloud Messaging (FCM)
+Maps / Location
+Google Maps API (background data only — NO map embed)
+Payment Gateway
+bKash / Nagad / SSL Commerz
+Admin Panel
+Custom Next.js Admin Dashboard
+Deployment
+Vercel (Backend + Admin), Supabase (DB + Auth)
+3.2 Architecture Flow
+Code
+4. Project Folder Structure
+The entire project lives under one main root folder with two subfolders:
+Code
+Rule: app/ folder contains ONLY Flutter mobile app code. admin-backend/ contains ONLY the Next.js API routes and admin panel code. The two teams can work fully independently.
+5. App Architecture — Single App, Dual Mode
+One Flutter app. On login, the user's role is detected and the appropriate UI is rendered. The other mode's code is never loaded (lazy loading).
+Decision
+Outcome
+Separate apps?
+NO — one app, two modes
+Separate interfaces?
+YES — role-based UI
+Lazy loading?
+YES — other mode code not loaded
+Dual account?
+YES — same login, mode switch button
+Admin panel?
+Web-based only — not in mobile app
+5.1 Navigation Structure
+Traveler Mode — Bottom Navigation (5 tabs)
+Code
+Business Owner Mode — Bottom Navigation (5 tabs)
+Code
+6. Authentication Screens
+6.1 Screen List
+Screen
+Description
+Splash Screen
+Logo animation on app open. Checks if user is logged in → auto-navigate to correct home
+Onboarding (3-4 slides)
+First install only. Slides: "বাংলাদেশ আবিষ্কার করো", "AI দিয়ে trip plan", "সব booking এক জায়গায়". Has Skip button.
+Login Screen
+Email + password. Google Sign-in button. "পাসওয়ার্ড ভুলে গেছেন?" link. Small "Business Owner?" text button in top-right corner.
+Register — Traveler
+Single page: Name, email, password, confirm password. Sends email verification link on submit.
+Register — Business Owner
+Multi-step flow (see 6.2 below)
+Email Verification
+Shows "link sent to your email" message. Some features locked until verified.
+Forgot Password
+Email input → reset link sent → user sets new password
+6.2 Business Owner Registration Flow
+Code
+7. Traveler App — All Screens
+7.1 Home Tab
+The most important screen. Personalized, location-aware, AI-driven.
+Components (top to bottom):
+Code
+7.2 Explore Tab
+Browse all destinations and services.
+Filters:
+Category: Beach | Hill | Forest | Historical | Waterfall | City | Island
+Division: ঢাকা | চট্টগ্রাম | সিলেট | রাজশাহী | খুলনা | বরিশাল | রংপুর | ময়মনসিংহ
+Sort: জনপ্রিয়তা | রেটিং | নতুন | কাছের
+Tourist Place Card contains:
+Cover image
+Name, District
+Star rating
+Short description
+Favorite (heart) button
+Place Detail Page
+Code
+7.3 AI Planner Tab
+The app's killer feature. WhatsApp-style chat UI powered by AI via OpenRouter API.
+Features:
+Code
+Example AI Conversation:
+Code
+7.4 Hotel Section
+Hotel List Page
+Code
+Hotel Detail Page
+Code
+Hotel Booking Page
+Code
+Booking Confirmation Page
+Code
+7.5 Restaurant Section
+Restaurant List Page
+Code
+Restaurant Detail Page
+Code
+Table Reservation Page
+Code
+7.6 Tour Guide Section
+Tour Guide List
+Code
+Tour Guide Detail Page
+Code
+Guide Booking Page
+Code
+7.7 Travel Packages Section
+Package List
+Code
+Package Detail Page
+Code
+7.8 Additional Screens
+Screen
+Details
+Favorites
+All saved items. Tabs: Places / Hotels / Restaurants / Guides / Packages
+Notifications
+Full list. Types: Booking confirmed ✅, Cancelled ❌, Payment 💳, Reminder ⏰, Offers 🎁, Review request ⭐
+My Bookings
+Three tabs: Upcoming / Past / Cancelled. Each shows details, status, cancel option
+My Reviews
+All reviews I've written. Edit/delete option
+Search Screen
+Full-text search. Natural language support. Recent searches shown. Suggested filters.
+Profile
+Profile picture (changeable). Name, email, phone. Stats: Total trips / Reviews given / Favorites. Edit Profile button.
+Settings
+Language (বাংলা / English). Notification preferences. Privacy settings. Change password. Delete account. Terms & Privacy Policy. Logout.
+8. Business Owner Dashboard — All Screens
+On login, business owners see a completely different UI. No traveler screens are accessible.
+8.1 Business Registration Flow
+Code
+8.2 Hotel Owner Dashboard
+Dashboard Home (Tab 1)
+Code
+Bookings (Tab 2)
+Code
+Listings / My Hotel (Tab 3)
+Code
+Analytics (Tab 4)
+Code
+Profile (Tab 5)
+Code
+8.3 Restaurant Owner Dashboard
+Dashboard Home
+Code
+Bookings Tab
+Code
+Listings Tab
+Code
+Analytics Tab
+Code
+8.4 Tour Guide Dashboard
+Profile Management (Listings Tab)
+Code
+Availability (Listings Tab)
+Code
+Bookings Tab
+Code
+9. Admin Panel (Web)
+Fully web-based. Built with Next.js (App Router) as a custom admin dashboard. Mobile app users cannot access this.
+9.1 All Modules
+Code
+10. Complete Booking Flow (End-to-End)
+10.1 Hotel Booking — Step by Step
+Code
+10.2 Booking Status States
+Status
+Description
+PENDING
+Payment done, awaiting business owner confirmation
+CONFIRMED
+Business owner accepted
+CHECKED_IN
+Guest has arrived
+COMPLETED
+Stay/trip finished
+CANCELLED_BY_USER
+User cancelled
+CANCELLED_BY_BUSINESS
+Business owner rejected
+REFUND_PENDING
+Cancellation processing, refund in queue
+REFUNDED
+Refund completed
+11. Notification Strategy
+11.1 Traveler Notifications
+Trigger
+Message
+Booking confirmed
+"আপনার [Hotel Name] booking confirmed! ✅"
+Business rejected booking
+"দুঃখিত, [Hotel Name] আপনার booking accept করতে পারেনি। কারণ: [reason]"
+1 day before trip
+"আগামীকাল আপনার Cox's Bazar trip! প্রস্তুত? ⏰"
+Day of trip (morning)
+"আজ আপনার trip! আবহাওয়া: [weather info] 🌤️"
+After trip completed
+"Trip কেমন ছিল? Review দিন ⭐"
+Special offer
+"Eid Special: ৩০% ছাড় সব hotel এ! 🎁"
+AI suggestion
+"আপনার পছন্দ অনুযায়ী নতুন destination: [place name] 🗺️"
+11.2 Business Owner Notifications
+Trigger
+Message
+New booking request
+"নতুন booking request! [Guest name], [dates]"
+User cancelled
+"[Guest name] তাদের booking cancel করেছে"
+New review received
+"নতুন review! [Name] আপনাকে [X] star দিয়েছে ⭐"
+Payment received
+"Payment received: ৳[amount] for booking #[ID]"
+Verification approved
+"আপনার business verified হয়েছে! ✅ Dashboard এ login করুন"
+11.3 Notification Delivery Channels
+Channel
+Use Case
+FCM Push Notification
+Real-time: booking events, payment, reminders
+In-App Notification Bell
+All notifications listed in-app
+Email
+Booking confirmation, account verification, password reset
+SMS (Phase 2)
+Critical confirmations for low-connectivity users
+12. Review & Rating System
+12.1 Rules
+Code
+12.2 Rating Calculation
+Factor
+Weight
+Star rating (1-5)
+Primary — highest weight
+Review volume
+More reviews = more trustworthy
+Recency
+Recent reviews weighted higher
+Photo reviews
+Photo-accompanied reviews get slight boost
+13. Map & Location Strategy
+Decision: Do NOT embed Google Maps in the app. Use Google Maps API only for background data.
+13.1 What the API is Used For
+Code
+13.2 What is NOT Done
+Code
+13.3 How Location is Displayed
+Instead of a map, the app shows custom-designed cards:
+Code
+Tapping [Get Directions] opens the external Google Maps app with the destination pre-filled.
+14. Payment System
+14.1 Supported Payment Methods
+Method
+Type
+bKash
+Mobile banking (primary)
+Nagad
+Mobile banking
+Rocket (DBBL)
+Mobile banking
+Visa/Mastercard
+Card via SSL Commerz
+Net banking
+Online banking via gateway
+14.2 Commission Structure
+Platform takes a % commission on every successful booking
+Commission rates are configurable per category from Admin Panel
+Business owners receive payouts weekly/bi-weekly (automatic transfer)
+14.3 Refund Policy
+Scenario
+Refund
+Cancellation well in advance
+Full refund
+Last-minute cancellation
+Partial refund (per business policy)
+Business cancels/rejects
+Full refund + possible compensation
+Refund processing time
+3–7 business days
+15. Security & Data Privacy
+Measure
+Implementation
+Authentication
+JWT Token (short expiry) + Refresh Token rotation
+API Security
+Rate limiting, CORS whitelist, HTTPS only
+Data Encryption
+Sensitive data encrypted at rest (Supabase)
+Document Storage
+Business docs in private Cloudflare R2 bucket (not public)
+Payment Security
+PCI-compliant gateway, zero card data stored on our servers
+Input Validation
+Server-side validation on all inputs, parameterized queries (SQL injection prevention)
+User Data Rights
+Data export + account deletion option available in Settings
+16. Development Roadmap
+Phase 1 — MVP (Month 1–4)
+Code
+Phase 2 — Core Features (Month 5–8)
+Code
+Phase 3 — Enhancement (Month 9–12)
+Code
+17. Phase 2 — Future Features
+17.1 Community Module
+Travel feed: travelers share trip photos and experiences
+Follow other travelers
+Like and comment on posts
+Travel tips shared by community
+17.2 Offline Mode
+Download maps for visited places (offline access)
+Saved itineraries accessible without internet
+Cached hotel/restaurant info
+17.3 Premium Membership
+Monthly / Yearly subscription tiers
+Benefits: exclusive deals, priority support, advanced AI, ad-free experience
+17.4 International Travel Info
+Country guides: India, Thailand, Malaysia
+Visa requirements and application process
+Embassy contact information
+17.5 Live Chat Support
+In-app customer support chat
+Direct messaging between business owner and traveler (for booking queries)
+Appendix — Quick Reference Summary
+Item
+Decision
+App Type
+Single Flutter app, dual mode (Traveler + Business)
+Admin Panel
+Separate web app (not in mobile app)
+Maps
+Google Maps API background only — no embed
+AI
+OpenRouter API (Claude/GPT) via Next.js API route
+Auth
+Supabase Auth + JWT
+Storage
+Cloudflare R2 + CDN
+Payments
+bKash / Nagad / SSL Commerz
+Push Notifications
+Firebase Cloud Messaging (FCM)
+Total Screens (app)
+~45+ screens across all flows
+Project Structure
+travel-bd/ → app/ (Flutter) + admin-backend/ (Next.js API + Admin)
+Phase 1 Timeline
+Month 1–4 (MVP)
+Phase 2 Timeline
+Month 5–8 (Core features)
+Phase 3 Timeline
+Month 9–12 (Enhancement)
+Travel BD PRD v1.0 — Confidential — June 2026
